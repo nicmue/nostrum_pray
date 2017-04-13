@@ -1,0 +1,16 @@
+% -*- coding: iso-8859-1 -*-
+% !TeX spellcheck = de_DE
+% !TeX encoding = iso-8859-1
+
+\chapter{Einleitung}
+\label{ch:einleitung}
+
+Ray- und Pathtracing sind Techniken mit hoher Bedeutung. Durch Computer erzeugte Grafiken, die nicht in Echtzeit berechnet werden, werden mit Hilfe von Ray- und Pathtracing-Technologien gerendert. Die Algorithmen verfolgen dabei Lichtstrahlen, um zu berechnen, ob ein Primitiv, das heißt ein Objekt der Szenerie, beleuchtet und nicht verdeckt ist.
+
+Diese Arbeit entstand im Rahmen der Veranstaltung \glqq Praxis der Multikern-Programmie\-rung: Werkzeuge, Modelle, Sprachen\grqq \ der Fakultät für Informatik am Karlsruher Institut für Technologie. Ziel ist es, zunächst einen hochparallelen und effizienten Raytracer zu implementieren. In einem zweiten Teil wurde ein Pathtracer implementiert.
+
+Beim Raytracing werden für jeden Pixel des zu rendernden Bildes zu allen Punktlichtquellen der Szene ein Strahl versendet. Trifft der Strahl die Lichtquelle und wird er nicht durch ein anderes Primitiv blockiert, wird der Punkt beleuchtet. Im hier implementierten Modell wurde ein Whitted-Style-Raytracer\footnote{\url{https://de.wikipedia.org/wiki/Raytracing}} ohne Reflektion mit Lambert-Schattierung implementiert. Hierbei handelt es sich um eine sehr einfache Variante, da Parallelisierung und Effizienz im Vordergrund standen.
+
+Das Pathtracing ist eine stochastische Variante des Raytracings, die mit Hilfe von Monte-Carlo-Integration die globale Beleuchtung einer Bildstelle simuliert. Es werden statt Punktlichtquellen Flächenlichtquellen benutzt. Das bedeutet, dass die Primitive der Szene Licht emittieren können. Für jeden Strahl, der ein Szenerieobjekt trifft, werden $n$ zufällige Strahlen versendet, die wiederum bei einem Treffer neue Kindstrahlen erzeugen (\textit{Diffuses Raytracing}). Die Beleuchtung der Stelle ergibt sich aus der Beteiligung all dieser Strahlen.
+
+In Kapitel \ref{ch:analyse} werden zunächst die Problemstellungen diskutiert und Ansätze zur Parallelisierung erörtert. Im anschließenden Kaptitel \ref{ch:implementierung} wird die Umsetzung der Ansätze beschrieben. Die Ergebnisse werden in Kapitel \ref{ch:evaluation} evaluiert. Mit Kapitel 5 wird diese Arbeit abgeschlossen.

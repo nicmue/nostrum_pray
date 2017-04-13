@@ -1,0 +1,58 @@
+% -*- coding: iso-8859-1 -*-
+% !TeX spellcheck = de_DE
+% !TeX encoding = iso-8859-1
+
+\newpage
+\chapter{Analyse und Entwurf}
+\label{ch:analyse}
+Das folgende Kapitel beschreibt die Analyse der Problemstellung und die betrachteten Ansätze zur Parallelisierung. Zu Beginn wurde eine naive und nicht parallelisierte Implementierung erstellt. Es wurde schnell klar, dass die reine Parallelisierung naiver Algorithmen nicht zielführend sind. So lag das Augenmerk bei der Suche nach effizienten und schnellen Algorithmen für Ray- bzw. Pathtracing. Des Weiteren war eine schnelle Datenstruktur von Nöten, um eine effiziente Traversierung der Primitive (Dreiecke) zu ermöglichen.
+
+\section{Analyse der Problemstellung}
+\subsection{Raytracing}
+\label{sec:ray_tracer}
+Der erste Raytracing-Ansatz bestand aus dem naiven Versuch, jeden Pixel Strahl zu verfolgen und eine einfache Schattenstrahlberechnung anzustellen. Dieser Ansatz lässt sich trivial parallelisieren. So konnte der naive Algorithmus mit OpenMP über alle Pixel paralellisiert werden. Hierbei wurde Datenparallelität benutzt. Als ein weiterführender Schritt wurde die Benutzung von Strahlenbündel eingeführt, welche mit Hilfe von Intel SSE-Instruktionen\footnote{\url{https://software.intel.com/sites/landingpage/IntrinsicsGuide}} realisiert wurden. Da eine der beiden Testmaschinen auch die verbesserte Version AVX unterstützt, wurde noch eine dritte Implementierung in AVX hinzugefügt.
+
+Das Konzept der Strahlenbündel basiert auf der Annahme, dass die benachbarten Strahlen eines betrachteten Strahls mit hoher Wahrscheinlichkeit das gleiche Dreieck treffen und so auch die gleiche Traversierung der Datenstruktur vollziehen. Es lassen sich Bündel von Strahlen zusammenfassen und mit Hilfe von SSE-Instruktionen gleichzeitig betrachten. Da es sich bei SSE um interne Vektorinstruktionen handelt, welche pro Prozessorfaden getrennt voneinander operieren, ließ sich die Technik mit OpenMP kombinieren.
+
+\subsection{Pathtracing}
+\label{sec:path_tracer}
+Anders als beim Rayrtracing kann man beim Pathtracing nicht auf Strahlenbündel setzen, da die \glqq Verfolgung\grqq\ eines Pfades auf zufälligen Richtungsänderungen basiert. Nur die von der Kamera wegführenden Strahlen besitzen die Eigenschaft, mit hoher Wahrscheinlichkeit das gleiche Dreieck zu treffen. Um dennoch eine gute Performanz beim Pathtracing zu erreichen, wurde hier auf die hochparallelisierte GPU gesetzt. Die Umsetzung ist hierbei ebenfalls ein datenparaller Ansatz über alle Pixel. Jeder GPU-Faden traversiert einen Pfad bis dieser terminiert.
+
+\section{Datenstruktur}
+\subsection{Räumliche Datenstruktur}
+\label{sec:kdTree}
+Die Suche nach geschnittenen Dreiecken ist einer der aufwendigsten Schritte bei Ray- bzw. Pathtracing. Der naive Ansatz war eine vollständige Suche auf allen Dreiecken. Dabei wurden die Dreiecke unabhängig ihrer räumlichen Position betrachtet. Diese Vorgehensweise ist sehr ineffizient und skaliert nicht. Eine effiziente Lösung bietet hierfür eine Bounding Volume Hirachy in Form eines k-d-Baums.
+
+Die Dreiecke werden anhand ihrer räumlichen Position in Bereiche unterteilt. Dazu wird der Raum rekursiv entlang einer Achsendimension in zwei kleinere Teilbereiche unterteilt, bis jeder Bereich nur noch eine kleine Anzahl an Dreiecken enthält. Die Unterteilungsmetrik kann verschieden gewählt werden.
+In einem ersten Ansatz wurde die naive Variante gewählt, bei der die Bereiche anhand des räumlichen Medians entlang der Achsendimension der größten Ausdehnung aufgeteilt wurden. Hierbei erhält man einen gut balancierten k-d-Baum.
+
+Der zweite Ansatz bestand darin den k-d-Baum mit Hilfe der so genannten Surface Area Heuristic (SAH) zu teilen. Dabei werden die Kosten einer Bereichstraversierung gegenüber den Kosten für die Traversierung aller beinhalteten Dreicke abgeschätzt. Um hierbei ein gutes Minimum zu finden, werden alle Trennebenen miteinander verglichen. Die Trennebene mit den geringsten zukünftigen Bereichskosten gewinnt. Kann keine Trennebene gefunden werden, sodass die Traversierungskosten für alle Dreiecken größer als die einer Aufteilung sind, bricht die Rekursion ab.
+
+Damit bei den beschriebenen Abläufen der Kopieraufwand für die Dreicke die Laufzeit nicht beeinträchtigt, wurden die Dreicke nur über ihren Index im ursprünglichen Vektor identifiziert. Dieses Konzept der Indirektion über Verktorindizes zieht sich durch sämtliche Teile des Projekts.
+
+\subsection{Axis Aligned Bounding Boxes und Dreiecksschnitt}
+%\subsection{Axis Aligned Bounding Boxes}
+Die Bereiche mit denen im oben beschriebenen k-d-Baum die Dreiecke räumlich unterteilt werden, können verschieden realisiert werden. Da in der hier verwendeten Implementierung nur an Achsen getrennt wird, sind die Bereiche an den Achsendimensionen orientiert. Man spricht von Axis Aligned Bounding Boxes. Hieraus ergeben sich noch weitere Vorteile. So kann man die ganze Bounding Box (im folgenden \glqq BB\grqq) allein durch zwei Punkte darstellen, welche die minimale bzw. maximale Ausdehnung der Box darstellen. Des Weiteren werden Schnitte einfacher, da man sich an den Achsendimensionen orientieren kann.
+
+%\subsection{Dreiecke und Dreiecksschnitt}
+Die Dreiecksschnittberechnung ist eine der am meisten verwendeten Funktionen im gesamten Projekt. Deshalb wirkt sich ein effizienter Algorithmus hier sehr stark auf die Gesamtlaufzeit aus. Um dies zu realisieren, wurde der Dreiecksschnittalgorithmus von Tomas Möller und Ben Trumbore verwendet \cite{moller2005fast}.  
+
+\section{Parallelisierungsansätze}
+\subsection{OpenMP}
+\label{sec:openmp}
+Aufgrund der oben beschriebenen Datenparallelität beim Raytracing, bietet sich eine Parallelisierung mittels OpenMP an. Hier können Schleifen durch Direktiven an den Übersetzer parallelisiert werden: \code{\#pragma omp parallel for}. Die Schleife wird in gleich große Abschnitte unterteilt, die jeweils von einem Thread abgearbeitet werden. Dies ist besonders nützlich bei der Schnittberechnung, die für jeden Pixel durchgeführt werden muss. Zu beachten ist, dass die einzelnen Schleifeniterationen keine Abhängigkeiten voneinander haben dürfen.
+Durch die rekursive Erzeugung des k-d-Baums ergibt sich die Möglichkeit des Taskparallismus mittels \code{\#pragma omp task}.
+Somit kann ein Thread \glqq Arbeitspakete\grqq\ erstellen, die von weiteren Fäden bearbeitet werden. Hierbei ist eine Begrenzung der Task-Tiefe wichtig, da ab einer gewissen Tiefe der Mehraufwand zwischen Task-Erzeugung und Task-Bearbeitung zu groß wird und ein Verlust an Effizienz eintritt.
+
+OpenMP bietet sich im speziellen an, da die von OpenMP verwendeten Direktiven immer lauffähig sind und mittels einfacher Compiler-Flags aktiviert werden können. Es ist somit möglich einfach inkrementell zu parallelisieren. 
+
+\subsection{Strahlschnittparallelisierung mit SIMD-Anweisungen}
+\label{sec:sse}
+Durch die explizite Vektorisierung der Strahlen können mehrere Schnittberechnungen gleichzeitig durchgeführt werden. Dies wird erreicht, indem die Strahlen, repräsentiert durch mehrere 32 Bit Gleitkommazahlen, abhängig vom Prozessor durch AVX- bzw. SSE-Instruktionen bearbeitet werden. Bei AVX Instruktionen können 256 Bit große Register, bei SSE Instruktionen 128 Bit große Register benutzt werden. So ist es es möglich vier (SSE) oder acht (AVX) Strahlen in einem Register zu speichern. Anschließend können die Schnittberechnungen auf das Register angewandt werden. 
+%Da wie bereits AVX- und SSE-Instruktionen mit weiteren Parallelisierungsmöglichkeiten zusammen funktionieren können bei einem Prozessor mit 4 Kernen und AVX bis zu 32 Strahlen gleichzeitig berechnet werden.
+
+\subsection{Massive SIMD-Parallelisierung auf der GPU}
+\todo{CUDA-Impl für PT erklären}
+Aufgrund der exponentiell steigenden Anzahl an Strahlen beim Pathtracing, bietet sich hier die Parallelisierung auf der GPU an. Diese bietet eine sehr hohe Anzahl an Fäden, sodass jeder Strahl von einem Faden bearbeitet werden kann. Abzuwägen ist hierbei der Mehraufwand zwischen Kopieraufwand von CPU auf GPU im Vergleich zur hoch parallelen Datenverarbeitung auf der GPU. 
+
+Ein Problem der GPU stellt die rekursive Berechnung der Schnitttests und der Datenstruktur dar. Die GPU ist nicht für rekursive Funktionalitäten ausgelegt. Des Weiteren sollte man aufgrund des Locksteps innerhalb eines GPU-Warps möglichst auf Kontrollstrukturen verzichten. Bei einer bedingten Verzweigung müssen beide möglichen Wege von allen 32 Fäden durchlaufen werden. Nicht verwendbare Ergebnisse werden anschließend verworfen. Man erzeugt somit im schlimmsten Fall den doppelten Rechenaufwand pro Warp. 

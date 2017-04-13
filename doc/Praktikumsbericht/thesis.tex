@@ -1,0 +1,137 @@
+%% LaTeX2e class for student theses
+%% thesis.tex
+%% 
+%% Karlsruhe Institute of Technology
+%% Institute for Program Structures and Data Organization
+%% Chair for Software Design and Quality (SDQ)
+%%
+%% Dr.-Ing. Erik Burger
+%% burger@kit.edu
+%%
+%% Version 1.3, 2016-12-29
+
+%% Available languages: english,ngerman
+%% Available modes: draft,final (see README)
+\documentclass[ngerman,final]{sdqthesis}
+
+%% ---------------------------------
+%% | Information about the thesis  |
+%% ---------------------------------
+
+%% Name of the author
+\author{Gruppe Nostrum\\Manuel Karl, Dominik Kleiser, Marc Leinweber, Nico Mürdter}
+
+%% Title (and possibly subtitle) of the thesis
+\title{Konzeption und Entwicklung einer parallelen Ray- \& Pathtracing-Anwendung}
+
+%% Type of the thesis 
+\thesistype{Projektpraktikum}
+
+%% Change the institute here, ``IPD'' is default
+% \myinstitute{Institute for \dots}
+
+%% You can put a logo in the ``logos'' directory and include it here
+%% instead of the SDQ logo
+% \grouplogo{myfile}
+%% Alternatively, you can disable the group logo
+\nogrouplogo
+
+%% The reviewers are the professors that grade your thesis
+\reviewerone{Philip Pfaffe, Martin Tillmann}
+\reviewertwo{Prof. B}
+
+%% The advisors are PhDs or Postdocs
+\advisorone{M.Sc. C}
+%% The second advisor can be omitted
+\advisortwo{M.Sc. D}
+
+%% Please enter the start end end time of your thesis
+\editingtime{28. November 2016}{05. Februar 2017}
+
+\settitle
+
+%% --------------------------------
+%% | Settings for word separation |
+%% --------------------------------
+
+%% Describe separation hints here.
+%% For more details, see 
+%% http://en.wikibooks.org/wiki/LaTeX/Text_Formatting#Hyphenation
+\hyphenation{
+% me-ta-mo-del
+Pro-gram-mie-rung
+Punkt-licht-quel-len
+}
+
+%% --------------------------------
+%% | Bibliography                 |
+%% --------------------------------
+
+%% Use biber instead of BibTeX, see README
+\usepackage[citestyle=numeric,style=numeric,backend=biber]{biblatex}
+\addbibresource{thesis.bib}
+
+%% ====================================
+%% ====================================
+%% ||                                ||
+%% || Beginning of the main document ||
+%% ||                                ||
+%% ====================================
+%% ====================================
+\begin{document}
+
+%% Set PDF metadata
+\setpdf
+
+%% Set the title
+\maketitle
+
+%% The Preamble begins here
+\frontmatter
+
+\setcounter{page}{1}
+\pagenumbering{roman}
+
+%% ----------------
+%% |   Abstract   |
+%% ----------------
+ 
+%% For theses written in English, an abstract both in English
+%% and German is mandatory.
+%%
+%% For theses written in German, a German abstract is sufficient.
+%%
+%% The text is included from the following files:
+%% - sections/abstract
+
+%% ------------------------
+%% |   Table of Contents  |
+%% ------------------------
+
+%% -----------------
+%% |   Main part   |
+%% -----------------
+
+\mainmatter
+
+\renewcommand{\cleardoublepage}{}
+\renewcommand{\clearpage}{}
+\setlength{\parindent}{0em} 
+
+\include{sections/einleitung}
+\include{sections/analyse}
+\include{sections/implementierung}
+\include{sections/evaluation}
+\include{sections/fazit}
+
+
+
+%% --------------------
+%% |   Bibliography   |
+%% --------------------
+
+%% Add entry to the table of contents for the bibliography
+\nocite{*}
+\printbibliography[heading=bibintoc]
+
+\end{document}

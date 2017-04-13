@@ -1,0 +1,5 @@
+/home/nico/workspace/git/nostrum_pray/CMakeFiles/rebuild_cache.dir
+/home/nico/workspace/git/nostrum_pray/CMakeFiles/edit_cache.dir
+/home/nico/workspace/git/nostrum_pray/src/CMakeFiles/rebuild_cache.dir
+/home/nico/workspace/git/nostrum_pray/src/CMakeFiles/edit_cache.dir
+/home/nico/workspace/git/nostrum_pray/src/CMakeFiles/Pray.dir

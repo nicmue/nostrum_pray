@@ -1,0 +1,14 @@
+{
+	"method": "path_tracing",
+	"max_depth": 1,
+	"num_samples": 4000,
+	"obj_file": "CornellBox-Original.obj",
+	"resolution_x": 800,
+	"resolution_y": 600,
+	"camera_position": [0.0, 1.0, 0.9],
+	"camera_look": [0.0, 0.0, -1.0],
+	"fov": 130,
+	"lights" : [
+	],
+	"background": [0.0, 0.0, 0.0]
+}

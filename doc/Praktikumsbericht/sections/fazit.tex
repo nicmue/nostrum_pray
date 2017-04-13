@@ -1,0 +1,9 @@
+\newpage
+\chapter{Fazit}
+\label{ch:fazit}
+
+In dieser Arbeit wurde ein massiv paralleler Raytracer sowie ein Pathtracer implementiert. Dazu wurden die Problemstellungen analysiert und vorhandene Arbeiten auf ihre Tauglichkeit untersucht. Aufgrund dieser Ergebnisse wurde ein CPU-Raytracer mit zwei verschiedenen Datenstrukturen (k-d-Baum mit und ohne SAH-Heuristik) sowie ein CPU- und GPU-Pathtracer implementiert. 
+
+Während der Arbeit zeigte sich, dass Wahl und Aufbau der Datenstruktur stark am Erfolg einer effizienten Lösung teilhaben. Trotz der zunächst trivial erscheinenden Parallelisierung, ergaben sich Probleme gerade für sehr große Szenen. Neben der Datenstruktur war auch das Pathtracing aufgrund des exponentiellen Wachstums schwer zu bewältigen. Es ergaben sich große Probleme bei der Wahl der Ausführungsumgebung (GPU vs CPU). Nichtsdestotrotz konnten auch für sehr große Szenen sehr gute Renderzeiten bei Full-HD-Auflösungen erreicht werden.
+
+Als offene Punkte bleiben die stapelfreie Implementierung des GPGPU-Pathtracing und des k-d-Baum-Schnittes sowie eine Evaluierung des Raytracings auf der GPU.

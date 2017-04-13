@@ -1,0 +1,12 @@
+{
+	"obj_file": "the_cabin.obj",
+	"resolution_x": 1920,
+	"resolution_y": 1080,
+	"camera_position": [20.0, 0.0, 0.0],
+	"camera_look": [0.0, 0.0, 1.0],
+	"fov": 120,
+	"lights" : [
+		{"position": [20.0, 0.0, 20.0], "color": [1.0, 1.0, 1.0]}
+	],
+	"background": [0.0, 0.0, 0.0]
+}

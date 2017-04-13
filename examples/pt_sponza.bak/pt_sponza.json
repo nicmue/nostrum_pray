@@ -1,0 +1,14 @@
+{
+	"obj_file": "sponza.obj",
+	"resolution_x": 400,
+	"resolution_y": 400,
+	"method": "path_tracing",
+	"max_depth": 1,
+	"num_samples": 16,
+	"camera_position": [-4.0, 2.0, 0.0],
+	"camera_look": [1.0, 0.0, 0.0],
+	"fov": 90,
+	"lights" : [
+	],
+	"background": [0.0, 0.0, 0.0]
+}

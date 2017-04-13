@@ -1,0 +1,12 @@
+{
+	"obj_file": "sponza.obj",
+	"resolution_x": 2048,
+	"resolution_y": 2048,
+	"camera_position": [-4.0, 2.0, 0.0],
+	"camera_look": [1.0, 0.0, 0.0],
+	"fov": 90,
+	"lights" : [
+		{"position": [2.0, 2.0, 0.0], "color": [10.0, 10.0, 10.0]}
+	],
+	"background": [0.0, 0.0, 0.0]
+}
