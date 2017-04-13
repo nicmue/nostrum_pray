@@ -10,9 +10,9 @@ Nostrum Pray is a massive parallel ray- and pathtracer, developed in a lab for m
 
 Contributors:
 * Manuel Karl
-* Dominik Kleiser [@Astero92](https://github.com/Astero92) <dominik.kleiser@student.kit.edu>
-* Marc Leinweber <post@mleinweber.de>
-* Nico Muerdter [@Smuerdt](https://github.com/Smuerdt) <nicomuerdter@gmail.com>
+* Dominik Kleiser([@Astero92](https://github.com/Astero92)) - <dominik.kleiser@student.kit.edu>
+* Marc Leinweber - <post@mleinweber.de>
+* Nico Muerdter([@Smuerdt](https://github.com/Smuerdt)) - <nicomuerdter@gmail.com>
 
 ## Compile
 
