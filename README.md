@@ -9,10 +9,10 @@ Nostrum Pray is a massive parallel ray- and pathtracer, developed in a lab for m
 * Path tracing: naive recursive GPU path tracer with changed call stack size and transformed KD tree datastructure
 
 Contributors:
-* Manuel Karl([@Kallle](https://github.com/kallle)) - <Manuel.karl@student.kit.edu>
-* Dominik Kleiser([@Astero92](https://github.com/Astero92)) - <dominik.kleiser@student.kit.edu>
-* Marc Leinweber - <post@mleinweber.de>
-* Nico Muerdter([@nicmue](https://github.com/nicmue)) - <nicomuerdter@gmail.com>
+* Manuel Karl([@kallle](https://github.com/kallle))
+* Dominik Kleiser([@Astero92](https://github.com/Astero92))
+* Marc Leinweber([@marc-leinweber](https://github.com/marc-leinweber))
+* Nico Muerdter([@nicmue](https://github.com/nicmue))
 
 ## Compile
 
